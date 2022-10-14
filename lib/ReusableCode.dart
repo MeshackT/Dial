@@ -8,7 +8,7 @@ class Reuse {
   static ClipRRect buttonType(String title, Color color, icon,
       Function() onPress, BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(10),
       child: Container(
         color: color,
         width: 100,
@@ -53,7 +53,7 @@ class Reuse {
   }
 
   //speed dial Top header
-  Center speedDialHeader(String headerText, BuildContext context) {
+  static Center speedDialHeader(String headerText, BuildContext context) {
     return Center(
       child: Text(
         headerText,
@@ -71,7 +71,7 @@ class Reuse {
   * Call functions for emergency purposes
   * navigation functions
   */
-  IconButton navigatorButton(Icon icon, Function() onPress) {
+  static IconButton navigatorButton(Icon icon, Function() onPress) {
     return IconButton(
       onPressed: onPress,
       icon: icon,
@@ -82,42 +82,42 @@ class Reuse {
   static Future<void> callAmbulance() async {
     const String number = '08177';
     await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
-      () => const MyHomePage(title: "Emergency"),
+      () => const MyHomePage(),
     );
   }
 
   static Future<void> callPolice() async {
     const String number = '10111';
     await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
-      () => const MyHomePage(title: "Emergency"),
+      () => const MyHomePage(),
     );
   }
 
   static Future<void> callChildLine() async {
     const String number = '116';
     await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
-      () => const MyHomePage(title: "Emergency"),
+      () => const MyHomePage(),
     );
   }
 
   static Future<void> callNetcare() async {
     const String number = '0829111';
     await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
-      () => const MyHomePage(title: "Emergency"),
+      () => const MyHomePage(),
     );
   }
 
   static Future<void> callPrivateEmergency() async {
     const String number = '0873652087';
     await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
-      () => const MyHomePage(title: "Emergency"),
+      () => const MyHomePage(),
     );
   }
 
   static Future<void> callFireFighter() async {
     const String number = '0800055555';
     await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
-      () => const MyHomePage(title: "Emergency"),
+      () => const MyHomePage(),
     );
   }
 }
