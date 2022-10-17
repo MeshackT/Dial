@@ -80,6 +80,16 @@ class _MyHomePageState extends State<MyHomePage> {
                                         '/addFriends',
                                         (route) => false),
                                   ),
+                                  Reuse.navigatorButton(
+                                    Icon(
+                                      Icons.settings,
+                                      size: 25.0,
+                                      color:
+                                          Theme.of(context).primaryColorLight,
+                                    ),
+                                    () => Navigator.pushNamedAndRemoveUntil(
+                                        context, '/settings', (route) => false),
+                                  ),
                                 ],
                               ),
                             ),

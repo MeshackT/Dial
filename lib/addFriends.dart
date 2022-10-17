@@ -5,7 +5,10 @@ import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'ReusableCode.dart';
 
@@ -247,162 +250,223 @@ class _AddFriendsState extends State<AddFriends> {
                                 : contacts[index];
                             //get a particular phone
                             Uint8List? image = contact.avatar;
-                            return ListTile(
-                              onTap: () async {
-                                try {
-                                  log.i("Starts\n");
-                                  log.i("list of contacts");
-                                  log.i(contacts);
-                                  log.i("\nTapped contact number");
-                                  log.i(contact.phones!.elementAt(0).value);
-                                  log.i("Ends\n");
-                                  String phoneNumber = contact.phones!
-                                      .elementAt(0)
-                                      .value
-                                      .toString();
 
-                                  await (FlutterPhoneDirectCaller.callNumber(
-                                    contact.phones!
+                            return Slidable(
+                              key: Key(contacts[index].toString()),
+                              startActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
+                                  dismissible: DismissiblePane(onDismissed: () {
+                                    setState(() {});
+                                  }),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (context) {
+                                        String nameTemporary = contact
+                                            .displayName
+                                            .toString()
+                                            .trim();
+                                        String phoneTemporary = contact.phones!
+                                            .elementAt(0)
+                                            .value
+                                            .toString();
+                                        display(nameTemporary, phoneTemporary);
+                                      },
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                      foregroundColor:
+                                          Theme.of(context).primaryColorLight,
+                                      icon: Icons.share,
+                                      //label: 'Delete',
+                                    ),
+                                  ]),
+                              endActionPane: ActionPane(
+                                  motion: const ScrollMotion(),
+                                  dismissible: DismissiblePane(onDismissed: () {
+                                    setState(() {});
+                                  }),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (context) {
+                                        //   delete contact
+
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                          backgroundColor: Theme.of(context)
+                                              .primaryColorDark,
+                                          duration: const Duration(seconds: 2),
+                                          content: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text(
+                                                " Do you want to delete? ",
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .primaryColorLight),
+                                              ),
+                                              TextButton(
+                                                onPressed: () async {
+                                                  //delete current contact
+
+                                                  String deleteContact =
+                                                      await ContactsService
+                                                          .deleteContact(
+                                                              contact);
+                                                  List<Contact>
+                                                      temporaryContact =
+                                                      (await ContactsService
+                                                              .getContacts())
+                                                          .toList();
+                                                  setState(() async {
+                                                    deleteContact.toString();
+                                                    temporaryContact = contacts;
+                                                  });
+                                                },
+                                                child: Text(
+                                                  "Yes",
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColorLight),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ));
+                                        //__________________//
+                                      },
+                                      backgroundColor:
+                                          Theme.of(context).primaryColorDark,
+                                      foregroundColor:
+                                          Theme.of(context).primaryColorLight,
+                                      icon: Icons.delete,
+                                      //label: 'Delete',
+                                    ),
+                                  ]),
+                              child: ListTile(
+                                onTap: () async {
+                                  try {
+                                    /*String phoneNumber = contact.phones!
                                         .elementAt(0)
                                         .value
-                                        .toString()
-                                        .replaceAllMapped(RegExp(r'^(\+)/|D'),
-                                            (Match m) {
-                                      return m[0] == "+" ? "+" : "";
-                                    }),
-                                  )).whenComplete(() => const AddFriends());
-                                } on Exception catch (e) {
-                                  // Anything else that is an exception
-                                  print('Unknown exception: $e');
-                                }
-                              },
-                              onLongPress: () async {
-                                try {
-                                  var update =
-                                      await ContactsService.openExistingContact(
-                                          contact);
-                                  final changUpdate =
-                                      await ContactsService.updateContact(
-                                          update);
+                                        .toString();*/
 
-                                  setState(() async {
-                                    await ContactsService.openContactForm();
-                                    update = changUpdate;
-                                  });
-                                } on FormOperationException catch (e) {
-                                  switch (e.errorCode) {
-                                    case FormOperationErrorCode
-                                        .FORM_COULD_NOT_BE_OPEN:
-                                      break;
-                                    case FormOperationErrorCode
-                                        .FORM_OPERATION_CANCELED:
-                                      if (kDebugMode) {
-                                        print(e.toString());
-                                      }
-                                      break;
-                                    case FormOperationErrorCode
-                                        .FORM_OPERATION_UNKNOWN_ERROR:
-                                      if (kDebugMode) {
-                                        print(e.toString());
-                                      }
-                                      break;
-                                    default:
+                                    await (FlutterPhoneDirectCaller.callNumber(
+                                      contact.phones!
+                                          .elementAt(0)
+                                          .value
+                                          .toString()
+                                          .replaceAllMapped(RegExp(r'^(\+)/|D'),
+                                              (Match m) {
+                                        return m[0] == "+" ? "+" : "";
+                                      }),
+                                    )).whenComplete(() => const AddFriends());
+                                  } on Exception catch (e) {
+                                    // Anything else that is an exception
+                                    print('Unknown exception: $e');
                                   }
-                                }
-                              },
-                              leading: (image != null && image.isNotEmpty)
-                                  ? CircleAvatar(
-                                      backgroundImage: MemoryImage(image),
-                                    )
-                                  : SizedBox(
-                                      height: 50,
-                                      width: 50,
-                                      child: CircleAvatar(
-                                        backgroundColor: Theme.of(context)
-                                            .primaryColorDark
-                                            .withOpacity(.49),
-                                        child: Text(
-                                          contact.displayName![0].trim(),
-                                        ),
-                                      ),
-                                    ),
-                              title: (contact.displayName == null &&
-                                      contact.displayName!.isEmpty)
-                                  ? Text(
-                                      "No Name",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .primaryColorLight),
-                                    )
-                                  : Text(
-                                      contact.displayName.toString().trim(),
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .primaryColorLight),
-                                    ),
-                              trailing: IconButton(
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: Theme.of(context).primaryColorLight,
-                                ),
-                                onPressed: () {
-                                  //   delete contact
+                                },
+                                onLongPress: () async {
+                                  try {
+                                    var update = await ContactsService
+                                        .openExistingContact(contact);
+                                    final changUpdate =
+                                        await ContactsService.updateContact(
+                                            update);
 
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                    backgroundColor:
-                                        Theme.of(context).primaryColorDark,
-                                    duration: const Duration(seconds: 2),
-                                    content: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Text(
-                                          " Do you want to delete? ",
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .primaryColorLight),
-                                        ),
-                                        TextButton(
-                                          onPressed: () async {
-                                            //delete current contact
-
-                                            String deleteContact =
-                                                await ContactsService
-                                                    .deleteContact(contact);
-                                            List<Contact> temporaryContact =
-                                                (await ContactsService
-                                                        .getContacts())
-                                                    .toList();
-                                            setState(() async {
-                                              deleteContact.toString();
-                                              temporaryContact = contacts;
-                                            });
-                                          },
+                                    setState(() async {
+                                      await ContactsService.openContactForm();
+                                      update = changUpdate;
+                                    });
+                                  } on FormOperationException catch (e) {
+                                    switch (e.errorCode) {
+                                      case FormOperationErrorCode
+                                          .FORM_COULD_NOT_BE_OPEN:
+                                        break;
+                                      case FormOperationErrorCode
+                                          .FORM_OPERATION_CANCELED:
+                                        if (kDebugMode) {
+                                          print(e.toString());
+                                        }
+                                        break;
+                                      case FormOperationErrorCode
+                                          .FORM_OPERATION_UNKNOWN_ERROR:
+                                        if (kDebugMode) {
+                                          print(e.toString());
+                                        }
+                                        break;
+                                      default:
+                                    }
+                                  }
+                                },
+                                leading: (image != null && image.isNotEmpty)
+                                    ? CircleAvatar(
+                                        backgroundImage: MemoryImage(image),
+                                      )
+                                    : SizedBox(
+                                        height: 50,
+                                        width: 50,
+                                        child: CircleAvatar(
+                                          backgroundColor: Theme.of(context)
+                                              .primaryColorDark
+                                              .withOpacity(.49),
                                           child: Text(
-                                            "Yes",
-                                            style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .primaryColorLight),
+                                            contact.displayName![0].trim(),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ));
-                                  //__________________//
-                                },
-                              ),
-                              subtitle: Text(
-                                contact.phones!.isEmpty
-                                    ? 'No Phone number'
-                                    : contact.phones!
-                                        .elementAt(0)
-                                        .value
-                                        .toString(),
-                                style: TextStyle(
-                                    color: Theme.of(context)
-                                        .primaryColorLight
-                                        .withOpacity(.49)),
+                                      ),
+                                title: (contact.displayName == null &&
+                                        contact.displayName!.isEmpty)
+                                    ? Text(
+                                        "No Name",
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .primaryColorLight),
+                                      )
+                                    : Text(
+                                        contact.displayName.toString().trim(),
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .primaryColorLight),
+                                      ),
+                                /* trailing: SizedBox(
+                                  width: 100,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.telegram,
+                                          color: Colors.blue,
+                                          size: 20,
+                                        ),
+                                        onPressed: () {},
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.whatsapp,
+                                          color: Colors.green,
+                                          size: 20,
+                                        ),
+                                        onPressed: () {
+                                          //MediaContactClass
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),*/
+                                subtitle: Text(
+                                  contact.phones!.isEmpty
+                                      ? 'No Phone number'
+                                      : contact.phones!
+                                          .elementAt(0)
+                                          .value
+                                          .toString(),
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .primaryColorLight
+                                          .withOpacity(.49)),
+                                ),
                               ),
                             );
                           },
@@ -426,7 +490,7 @@ class _AddFriendsState extends State<AddFriends> {
               onPressed: () async {
                 //get the contacts again
                 setState(() {
-                  //clear the textbbox
+                  //clear the textBox
                   search.clear();
                 });
                 //call the list
@@ -480,6 +544,16 @@ class _AddFriendsState extends State<AddFriends> {
           ),
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  display(String nameTemporary, String phoneTemporary) async {
+    return await Share.share('$nameTemporary\n$phoneTemporary').then(
+      (value) => Fluttertoast.showToast(
+        msg: "Sharing contacts",
+        backgroundColor: Theme.of(context).primaryColor,
+        textColor: Theme.of(context).primaryColorLight,
+      ),
     );
   }
 }

@@ -36,12 +36,12 @@ dependencies:
   #gets contacts
   #fast_contacts: ^1.1.1
   #handles permission from the device
-  permission_handler: ^10.0.2
+  permission_handler: ^10.1.0
 
 #get contacts
   #flutter_contacts: ^1.1.5
   #takes number to dial pad
-  #url_launcher: ^6.1.6
+  url_launcher: ^6.1.6
 
   #call by pressing
   flutter_phone_direct_caller: ^2.1.1
@@ -58,11 +58,17 @@ dependencies:
   #Testing display plugin
   logger: ^1.1.0
 
-  #Consumer state
-  consumer: ^2.3.1
-
   #back Button
   double_back_to_close_app: ^2.1.0
+
+  #share information
+  share_plus: ^5.0.0
+
+  #LazyLoading
+  lazy_loading_list: ^1.0.1
+
+  #Swipe card
+  flutter_slidable: ^2.0.0
 
 dev_dependencies:
   flutter_test:

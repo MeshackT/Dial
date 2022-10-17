@@ -1,3 +1,4 @@
+import 'package:dial/Settings.dart';
 import 'package:dial/addFriends.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -56,6 +57,7 @@ class _MyAppState extends State<MyApp> {
         primaryColorDark: Colors.deepPurple,
         primaryColorLight: Colors.white,
         fontFamily: 'Poppins',
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
@@ -64,6 +66,7 @@ class _MyAppState extends State<MyApp> {
         '/': (context) => const MyHomePage(),
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/addFriends': (context) => const AddFriends(),
+        '/settings': (context) => const Settings(),
       },
     );
   }
