@@ -67,6 +67,9 @@ dependencies:
   #LazyLoading
   lazy_loading_list: ^1.0.1
 
+  #Open Whatsapp
+  open_whatsapp: ^0.0.1
+
   #Swipe card
   flutter_slidable: ^2.0.0
 

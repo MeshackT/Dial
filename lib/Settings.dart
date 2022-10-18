@@ -34,21 +34,30 @@ class Settings extends StatelessWidget {
                 end: Alignment.bottomCenter),
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "About",
-                style: TextStyle(
-                  color: Theme.of(context).primaryColorLight,
-                ),
-                textAlign: TextAlign.left,
-              ),
-              Container(
-                color: Theme.of(context).primaryColor,
+              SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: 50,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Center(
+                    child: Text(
+                      "More",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColorLight,
+                          fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ),
+              ),
+              headers(context, 'Generals'),
+              Container(
+                margin: const EdgeInsets.only(left: 15),
+                width: MediaQuery.of(context).size.width,
+                height: 30,
                 child: InkWell(
                   child: Text(
-                    "Share with Frinds",
+                    "One time payment to remove adds permanently",
                     style: TextStyle(
                       color: Theme.of(context).primaryColorLight,
                     ),
@@ -56,17 +65,103 @@ class Settings extends StatelessWidget {
                   onTap: () {},
                 ),
               ),
-              Text(
-                "App Version: 2.0.0",
-                style: TextStyle(
-                  color: Theme.of(context).primaryColorLight,
+              headers(context, 'About'),
+              SizedBox(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    tapButton(context, 'Share with Friends', () => null),
+                    tapButton(context, 'More Apps', () => null),
+                    tapButton(context, 'Send us feedback', () => null),
+                  ],
                 ),
-                textAlign: TextAlign.left,
+              ),
+              headers(context, 'Follow Us'),
+              SizedBox(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    tapIconButton(
+                      context,
+                      'WhatsApp',
+                      () => null,
+                      const Icon(Icons.whatsapp),
+                    ),
+                    tapIconButton(
+                      context,
+                      'FaceBook',
+                      () => null,
+                      const Icon(Icons.facebook),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  "App version 2.0.0",
+                  style: TextStyle(color: Theme.of(context).primaryColorLight),
+                ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Container headers(BuildContext context, String title) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      color: Theme.of(context).primaryColor.withOpacity(.5),
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10),
+        child: SizedBox(
+          child: Text(
+            title,
+            style: TextStyle(
+                color: Theme.of(context).primaryColorLight,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding tapButton(BuildContext context, String title, Function() function) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+      child: InkWell(
+        onTap: function,
+        child: Text(
+          title,
+          style: TextStyle(
+            color: Theme.of(context).primaryColorLight,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding tapIconButton(
+      BuildContext context, String title, Function() function, Icon icon) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+        child: Row(
+          children: [
+            icon,
+            const SizedBox(
+              width: 7,
+            ),
+            Text(
+              title,
+              style: TextStyle(color: Theme.of(context).primaryColorLight),
+            ),
+          ],
+        ));
   }
 }
