@@ -1,10 +1,12 @@
 import 'package:dial/landingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Reuse {
   //button cards emergency
-
   static ClipRRect buttonType(String title, Color color, icon,
       Function() onPress, BuildContext context) {
     return ClipRRect(
@@ -119,5 +121,53 @@ class Reuse {
     await FlutterPhoneDirectCaller.callNumber(number).whenComplete(
       () => const MyHomePage(),
     );
+  }
+
+  //Share details
+  static display(BuildContext context, String nameTemporary,
+      String phoneTemporary, String message) async {
+    return await Share.share('$nameTemporary\n$phoneTemporary').then(
+      (value) => Fluttertoast.showToast(
+        msg: "Sharing contacts",
+        backgroundColor: Theme.of(context).primaryColor,
+        textColor: Theme.of(context).primaryColorLight,
+      ),
+    );
+  }
+
+  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> callSnack(
+      BuildContext context) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          content: Text(
+            "Number Copied",
+            style: TextStyle(color: Theme.of(context).primaryColorLight),
+          )),
+    );
+  }
+
+  //whatsapp call
+  static Future<void> openWhatsApp(BuildContext context,
+      {@required phoneNumber, @required message}) async {
+    //var url = Uri.parse("whatsapp://send?phone=$phoneNumber&text=$message");
+
+    var whatsAppURlAndroid =
+        Uri.parse("whatsApp://send?phone=$phoneNumber}&text=$message");
+/*    var whatsAppURLIos =
+        "https://wa.me/$phoneNumber?text=${Uri.parse("hello")}";*/
+
+    /*search for checking platforms later*/
+    await canLaunchUrl(whatsAppURlAndroid)
+        ? launchUrl(whatsAppURlAndroid)
+        : ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Theme.of(context).primaryColorDark,
+              content: Text(
+                "Can't open whatsApp",
+                style: TextStyle(color: Theme.of(context).primaryColorLight),
+              ),
+            ),
+          );
   }
 }

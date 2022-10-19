@@ -1,10 +1,16 @@
+import 'package:clipboard/clipboard.dart';
+import 'package:dial/ReusableCode.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Settings extends StatelessWidget {
   const Settings({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    const String number = '0676428404';
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -24,89 +30,110 @@ class Settings extends StatelessWidget {
           },
         ),
       ),
-      body: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.only(top: 0.0),
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Color(0xff3D3C77), Color(0xff000000)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter),
+      body: DoubleBackToCloseApp(
+        snackBar: SnackBar(
+          backgroundColor: Theme.of(context).primaryColor.withOpacity(1),
+          content: Text(
+            'Tap back again to leave the application',
+            style: TextStyle(color: Theme.of(context).primaryColorLight),
+            textAlign: TextAlign.center,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Center(
+        ),
+        child: SafeArea(
+          child: Container(
+            margin: const EdgeInsets.only(top: 0.0),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Color(0xff3D3C77), Color(0xff000000)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Center(
+                      child: Text(
+                        "More",
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColorLight,
+                            fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                  ),
+                ),
+                headers(context, 'Generals'),
+                Container(
+                  margin: const EdgeInsets.only(left: 15),
+                  width: MediaQuery.of(context).size.width,
+                  height: 30,
+                  child: InkWell(
                     child: Text(
-                      "More",
+                      "One time payment to remove adds permanently",
                       style: TextStyle(
-                          color: Theme.of(context).primaryColorLight,
-                          fontWeight: FontWeight.w800),
+                        color: Theme.of(context).primaryColorLight,
+                      ),
                     ),
+                    onTap: () {},
                   ),
                 ),
-              ),
-              headers(context, 'Generals'),
-              Container(
-                margin: const EdgeInsets.only(left: 15),
-                width: MediaQuery.of(context).size.width,
-                height: 30,
-                child: InkWell(
+                headers(context, 'About'),
+                SizedBox(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      tapButton(
+                          context,
+                          'Share with Friends',
+                          () => Reuse.display(
+                              context,
+                              "Dial App\n",
+                              "Download Dial on play store with a blue"
+                                  " background and white dots",
+                              "")),
+                      //tapButton(context, 'More Apps', () => null),
+                      tapButton(
+                        context,
+                        'Send us feedback',
+                        () => Navigator.pushNamedAndRemoveUntil(
+                            context, '/emailTemplate', (route) => false),
+                      ),
+                    ],
+                  ),
+                ),
+                headers(context, 'Follow Us'),
+                SizedBox(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      tapIconButton(
+                        context,
+                        'WhatsApp',
+                        () => FlutterClipboard.copy(number).then(
+                          (value) => Fluttertoast.showToast(
+                              msg: "Number copied: $number"),
+                        ),
+                        const Icon(Icons.whatsapp),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
                   child: Text(
-                    "One time payment to remove adds permanently",
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColorLight,
-                    ),
+                    "App version 2.0.0",
+                    style:
+                        TextStyle(color: Theme.of(context).primaryColorLight),
                   ),
-                  onTap: () {},
                 ),
-              ),
-              headers(context, 'About'),
-              SizedBox(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    tapButton(context, 'Share with Friends', () => null),
-                    tapButton(context, 'More Apps', () => null),
-                    tapButton(context, 'Send us feedback', () => null),
-                  ],
-                ),
-              ),
-              headers(context, 'Follow Us'),
-              SizedBox(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    tapIconButton(
-                      context,
-                      'WhatsApp',
-                      () => null,
-                      const Icon(Icons.whatsapp),
-                    ),
-                    tapIconButton(
-                      context,
-                      'FaceBook',
-                      () => null,
-                      const Icon(Icons.facebook),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Text(
-                  "App version 2.0.0",
-                  style: TextStyle(color: Theme.of(context).primaryColorLight),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

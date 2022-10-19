@@ -6,10 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'ReusableCode.dart';
 
@@ -148,16 +145,17 @@ class _AddFriendsState extends State<AddFriends> {
                 Stack(
                   children: [
                     Image.asset(
-                      'images/one-small.png',
+                      'images/l.png',
                       width: 390,
                       height: 218,
                       fit: BoxFit.cover,
                     ),
-                    Reuse.speedDialHeader("Speed dial", context),
+                    //Reuse.speedDialHeader("Speed dial", context),
                     Padding(
                       padding: const EdgeInsets.only(
-                          bottom: 0.0, left: 80, right: 80, top: 40),
+                          bottom: 0.0, left: 80, right: 80, top: 30),
                       child: Container(
+                        height: 50,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(40),
                         ),
@@ -311,8 +309,8 @@ class _AddFriendsState extends State<AddFriends> {
                                               .value
                                               .toString();
 
-                                          display(
-                                              nameTemporary, phoneTemporary);
+                                          Reuse.display(context, nameTemporary,
+                                              phoneTemporary, "");
                                         },
                                         backgroundColor:
                                             Theme.of(context).primaryColor,
@@ -327,27 +325,33 @@ class _AddFriendsState extends State<AddFriends> {
                                     extentRatio: .25,
                                     dismissible:
                                         DismissiblePane(onDismissed: () async {
-                                      setState(() {
-                                        contacts.remove(index);
-                                      });
                                       List<Contact> tempCont =
                                           (await ContactsService.getContacts())
                                               .toList();
 
                                       if (tempCont.isNotEmpty) {
                                         contacts = tempCont;
-                                        setState(() {
+
+                                        await callSnack(contact).then(
+                                          (value) => setState(() {
+                                            getAllContacts();
+                                            contacts = tempCont;
+                                            contacts.remove(index);
+                                          }),
+                                        );
+
+                                        /*setState(() {
                                           getAllContacts();
                                           contacts = tempCont;
-                                        });
+                                        });*/
                                       }
                                     }),
                                     children: [
                                       SlidableAction(
                                         onPressed: (context) {
                                           //   delete contact
-
-                                          ScaffoldMessenger.of(context)
+                                          callSnack(contact);
+                                          /*ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                             backgroundColor: Theme.of(context)
                                                 .primaryColorDark,
@@ -392,7 +396,7 @@ class _AddFriendsState extends State<AddFriends> {
                                                 ),
                                               ],
                                             ),
-                                          ));
+                                          ));*/
                                           //__________________//
                                         },
                                         backgroundColor:
@@ -528,7 +532,7 @@ class _AddFriendsState extends State<AddFriends> {
                                                 /*FlutterOpenWhatsapp
                                                     .sendSingleMessage(
                                                         phoneTemporary, "Hello");*/
-                                                openWhatsApp(
+                                                Reuse.openWhatsApp(context,
                                                     phoneNumber: phoneTemporary,
                                                     message: 'Hello ');
                                               },
@@ -631,35 +635,40 @@ class _AddFriendsState extends State<AddFriends> {
     );
   }
 
-  display(String nameTemporary, String phoneTemporary) async {
-    return await Share.share('$nameTemporary\n$phoneTemporary').then(
-      (value) => Fluttertoast.showToast(
-        msg: "Sharing contacts",
-        backgroundColor: Theme.of(context).primaryColor,
-        textColor: Theme.of(context).primaryColorLight,
-      ),
-    );
-  }
+  //call scaffold
+  Future<ScaffoldFeatureController<SnackBar, SnackBarClosedReason>> callSnack(
+      Contact contact) async {
+    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Theme.of(context).primaryColorDark,
+      duration: const Duration(seconds: 2),
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            " Do you want to delete? ",
+            style: TextStyle(color: Theme.of(context).primaryColorLight),
+          ),
+          TextButton(
+            onPressed: () async {
+              //delete current contact
 
-  Future<void> openWhatsApp({@required phoneNumber, @required message}) async {
-    var url = Uri.parse("whatsapp://send?phone=$phoneNumber&text=$message");
-
-    var whatsAppURl_android =
-        Uri.parse("${"whatsApp://send?phone=" + phoneNumber}&text=$message");
-    var whatsAppURL_ios =
-        "https://wa.me/$phoneNumber?text=${Uri.parse("hello")}";
-
-    /*search for checking platforms later*/
-    await canLaunchUrl(whatsAppURl_android)
-        ? launchUrl(whatsAppURl_android)
-        : ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Theme.of(context).primaryColorDark,
-              content: Text(
-                "Can't open whatsApp",
-                style: TextStyle(color: Theme.of(context).primaryColorLight),
-              ),
+              String deleteContact =
+                  await ContactsService.deleteContact(contact);
+              List<Contact> temporaryContact =
+                  (await ContactsService.getContacts()).toList();
+              setState(() async {
+                deleteContact.toString();
+                temporaryContact = contacts;
+              });
+            },
+            child: Text(
+              "Yes",
+              style: TextStyle(color: Theme.of(context).primaryColorLight),
             ),
-          );
+          ),
+        ],
+      ),
+    ));
+    //__________________//
   }
 }

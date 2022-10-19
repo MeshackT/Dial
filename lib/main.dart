@@ -1,5 +1,6 @@
 import 'package:dial/Settings.dart';
 import 'package:dial/addFriends.dart';
+import 'package:dial/feedback%20class/EmailTemplate.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -67,6 +68,7 @@ class _MyAppState extends State<MyApp> {
         // When navigating to the "/second" route, build the SecondScreen widget.
         '/addFriends': (context) => const AddFriends(),
         '/settings': (context) => const Settings(),
+        '/emailTemplate': (context) => const EmailTemplate(),
       },
     );
   }

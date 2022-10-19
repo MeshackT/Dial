@@ -18,7 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
         snackBar: SnackBar(
           backgroundColor: Theme.of(context).primaryColor.withOpacity(1),
           content: Text(
-            'Tap back again to leave',
+            'Tap back again to leave the application',
             style: TextStyle(color: Theme.of(context).primaryColorLight),
             textAlign: TextAlign.center,
           ),
@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Stack(
                     children: [
                       Image.asset(
-                        'images/nine-small.png',
+                        'images/la.png',
                         width: 390,
                         height: 218,
                         fit: BoxFit.cover,
